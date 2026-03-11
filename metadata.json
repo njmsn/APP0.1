@@ -1,0 +1,5 @@
+{
+  "name": "Remix: 智能巡检助手",
+  "description": "一款专业的移动巡检管理系统，支持实时数据采集、任务管理与异常上报。",
+  "requestFramePermissions": []
+}

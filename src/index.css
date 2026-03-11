@@ -1,0 +1,50 @@
+@import "tailwindcss";
+
+/* Flat Leaflet Controls */
+.leaflet-bar {
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: none !important;
+  border-radius: 8px !important;
+  overflow: hidden;
+}
+
+.leaflet-bar a {
+  background-color: #ffffff !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+  color: #475569 !important;
+}
+
+.leaflet-bar a:last-child {
+  border-bottom: none !important;
+}
+
+.leaflet-control-layers {
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: none !important;
+  border-radius: 12px !important;
+  background-color: #ffffff !important;
+}
+
+.leaflet-control-layers-toggle {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolygon points='12 2 2 7 12 12 22 7 12 2'%3E%3C/polygon%3E%3Cpolyline points='2 17 12 22 22 17'%3E%3C/polyline%3E%3Cpolyline points='2 12 12 17 22 12'%3E%3C/polyline%3E%3C/svg%3E") !important;
+  background-size: 20px 20px !important;
+  width: 44px !important;
+  height: 44px !important;
+}
+
+.leaflet-control-layers-expanded {
+  padding: 12px !important;
+  color: #475569 !important;
+  font-family: inherit !important;
+  font-size: 13px !important;
+  border: 1px solid #e2e8f0 !important;
+}
+
+.leaflet-control-layers-selector {
+  margin-top: 2px !important;
+}
+
+.custom-div-icon {
+  background: none !important;
+  border: none !important;
+}
