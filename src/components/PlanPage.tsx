@@ -11,7 +11,7 @@ import {
   ClipboardCheck,
   Navigation
 } from 'lucide-react';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 
 interface Plan {
   id: string;
@@ -27,15 +27,20 @@ interface Plan {
 
 const PlanPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState('全部状态');
-  const [typeFilter, setTypeFilter] = useState('全部类型');
+  const [statusFilter, setStatusFilter] = useState('状态');
+  const [typeFilter, setTypeFilter] = useState('类型');
+  const [isStatusOpen, setIsStatusOpen] = useState(false);
+  const [isTypeOpen, setIsTypeOpen] = useState(false);
+
+  const statusOptions = ['全部', '未完成', '已完成', '已经过', '已填报'];
+  const typeOptions = ['全部', '调压器', '阀门'];
 
   const plans: Plan[] = [
     {
       id: '1',
       name: '黄浦区南京东路路灯巡检计划',
       status: 'in_progress',
-      type: '常规巡检',
+      type: '调压器',
       address: '上海市黄浦区南京东路123号',
       time: '2026-03-11 08:00 - 12:00',
       method: '手机端填报',
@@ -46,23 +51,12 @@ const PlanPage: React.FC = () => {
       id: '2',
       name: '静安寺周边电力设施维护',
       status: 'pending',
-      type: '专项维护',
+      type: '阀门',
       address: '上海市静安区南京西路1688号',
       time: '2026-03-11 13:30 - 17:30',
       method: '扫码填报',
       elapsedTime: '00:00:00',
       isDaily: true
-    },
-    {
-      id: '3',
-      name: '徐汇滨江步道安全检查',
-      status: 'completed',
-      type: '安全巡查',
-      address: '上海市徐汇区龙腾大道',
-      time: '2026-03-10 09:00 - 11:00',
-      method: '自动同步',
-      elapsedTime: '02:00:00',
-      isDaily: false
     }
   ];
 
@@ -85,42 +79,97 @@ const PlanPage: React.FC = () => {
   return (
     <div className="flex-1 flex flex-col bg-slate-50 overflow-hidden">
       {/* Page Title */}
-      <div className="px-6 pt-6 pb-2 bg-white shrink-0">
+      <div className="px-6 pt-6 pb-4 bg-white shrink-0">
         <h2 className="text-xl font-bold text-slate-800 tracking-tight">计划</h2>
-      </div>
-
-      {/* Header / Search Area */}
-      <div className="bg-white px-6 pt-2 pb-4 shadow-sm shrink-0">
-        <div className="relative group">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors" size={18} />
-          <input 
-            type="text" 
-            placeholder="搜索计划名称或地址"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 pl-11 pr-4 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/5 transition-all text-sm"
-          />
-        </div>
-
-        {/* Filters Row */}
-        <div className="flex gap-2 mt-4">
-          <button className="flex-1 flex items-center justify-between px-3 py-2 bg-slate-50 border border-slate-100 rounded-lg text-xs text-slate-600 hover:bg-slate-100 transition-colors">
-            <span>{statusFilter}</span>
-            <ChevronDown size={14} />
-          </button>
-          <button className="flex-1 flex items-center justify-between px-3 py-2 bg-slate-50 border border-slate-100 rounded-lg text-xs text-slate-600 hover:bg-slate-100 transition-colors">
-            <span>{typeFilter}</span>
-            <ChevronDown size={14} />
-          </button>
-          <button className="flex items-center gap-1 px-3 py-2 bg-slate-50 border border-slate-100 rounded-lg text-xs text-slate-600 hover:bg-slate-100 transition-colors">
-            <Filter size={14} />
-            <span>高级筛选</span>
-          </button>
-        </div>
       </div>
 
       {/* Plans List */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        {/* Search & Filters (No Card) */}
+        <motion.div 
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="space-y-3 px-1"
+        >
+          <div className="relative group">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors" size={18} />
+            <input 
+              type="text" 
+              placeholder="搜索计划名称或地址"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full bg-white border border-slate-200 rounded-xl py-3 pl-11 pr-4 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/5 shadow-sm transition-all text-sm"
+            />
+          </div>
+
+          {/* Filters Row */}
+          <div className="flex gap-2 relative">
+            <div className="flex-1 relative">
+              <button 
+                onClick={() => { setIsStatusOpen(!isStatusOpen); setIsTypeOpen(false); }}
+                className="w-full flex items-center justify-between px-3 py-2.5 bg-white border border-slate-200 rounded-lg text-xs text-slate-600 hover:bg-slate-50 transition-colors shadow-sm"
+              >
+                <span className={statusFilter !== '状态' ? 'text-blue-600 font-bold' : ''}>{statusFilter}</span>
+                <ChevronDown size={14} className={`transition-transform ${isStatusOpen ? 'rotate-180' : ''}`} />
+              </button>
+              <AnimatePresence>
+                {isStatusOpen && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: 5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 5 }}
+                    className="absolute top-full left-0 w-full mt-1 bg-white border border-slate-100 rounded-lg shadow-xl z-50 py-1"
+                  >
+                    {statusOptions.map(opt => (
+                      <button 
+                        key={opt}
+                        onClick={() => { setStatusFilter(opt === '全部' ? '状态' : opt); setIsStatusOpen(false); }}
+                        className="w-full text-left px-3 py-2 text-xs text-slate-600 hover:bg-blue-50 hover:text-blue-600 transition-colors"
+                      >
+                        {opt}
+                      </button>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            <div className="flex-1 relative">
+              <button 
+                onClick={() => { setIsTypeOpen(!isTypeOpen); setIsStatusOpen(false); }}
+                className="w-full flex items-center justify-between px-3 py-2.5 bg-white border border-slate-200 rounded-lg text-xs text-slate-600 hover:bg-slate-50 transition-colors shadow-sm"
+              >
+                <span className={typeFilter !== '类型' ? 'text-blue-600 font-bold' : ''}>{typeFilter}</span>
+                <ChevronDown size={14} className={`transition-transform ${isTypeOpen ? 'rotate-180' : ''}`} />
+              </button>
+              <AnimatePresence>
+                {isTypeOpen && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: 5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 5 }}
+                    className="absolute top-full left-0 w-full mt-1 bg-white border border-slate-100 rounded-lg shadow-xl z-50 py-1"
+                  >
+                    {typeOptions.map(opt => (
+                      <button 
+                        key={opt}
+                        onClick={() => { setTypeFilter(opt === '全部' ? '类型' : opt); setIsTypeOpen(false); }}
+                        className="w-full text-left px-3 py-2 text-xs text-slate-600 hover:bg-blue-50 hover:text-blue-600 transition-colors"
+                      >
+                        {opt}
+                      </button>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            <button className="flex items-center gap-1 px-3 py-2.5 bg-white border border-slate-200 rounded-lg text-xs text-slate-600 hover:bg-slate-50 transition-colors shadow-sm">
+              <Filter size={14} />
+              <span>高级筛选</span>
+            </button>
+          </div>
+        </motion.div>
         {plans.map((plan) => (
           <motion.div 
             key={plan.id}
